@@ -1,0 +1,35 @@
+<form (ngSubmit)="addEtudiant()" class="form container">
+    <div class="form-group">
+      <label for="nom" class="control-label">Nom</label>
+      <input [(ngModel)]="newEtudiant.nom" name="nom" type="text" required class="form-control" id="nom">
+    </div>
+    <div class="form-group">
+      <label for="prenom" class="control-label">Prénom</label>
+      <input [(ngModel)]="newEtudiant.prenom" name="prenom" type="text" required class="form-control" id="prenom">
+    </div>
+    <div class="form-group">
+      <label for="date_naissance" class="control-label">Date de naissance</label>
+      <input [(ngModel)]="newEtudiant.date_naissance" name="date_naissance" type="date" required class="form-control" id="date_naissance">
+    </div>
+    <div class="form-group">
+      <label for="genre" class="control-label">Genre</label>
+      <select [(ngModel)]="newEtudiant.genre" name="genre" required class="form-control" id="genre">
+        <option value="M">Homme</option>
+        <option value="F">Femme</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="adresse" class="control-label">Adresse</label>
+      <input [(ngModel)]="newEtudiant.adresse" name="adresse" type="text" class="form-control" id="adresse">
+    </div>
+    <div class="form-group">
+      <label for="email" class="control-label">Email</label>
+      <input [(ngModel)]="newEtudiant.email" name="email" type="email" required class="form-control" id="email">
+    </div>
+    <div class="form-group">
+      <label for="telephone" class="control-label">Téléphone</label>
+      <input [(ngModel)]="newEtudiant.telephone" name="telephone" type="text" class="form-control" id="telephone">
+    </div>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+    <button type="button" class="btn btn-danger" (click)="anuler()">anuler</button>
+  </form>
