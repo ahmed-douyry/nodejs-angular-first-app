@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, NgModule, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-modifier',
@@ -25,7 +25,7 @@ export class ModifierComponent implements OnInit {
   
   api = 'http://localhost:3000/api/etudiants';
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute,private router:Router) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -51,5 +51,9 @@ export class ModifierComponent implements OnInit {
       .subscribe((response) => {
         console.log('Étudiant mis à jour avec succès:', response);
       });
+      this.router.navigate(['/']);
+  }
+  annuler(){
+    if(confirm('estes vous sur de vouloir annuler')){this.router.navigate(['/'])}
   }
 }

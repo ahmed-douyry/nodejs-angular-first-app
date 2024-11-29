@@ -1,0 +1,59 @@
+<div class="p-4 max-w-4xl mx-auto">
+    <div class="flex mb-4">
+      <input
+        type="text"
+        [(ngModel)]="query"
+        (input)="onSearchChange(query)"
+        class="border border-gray-300 rounded-lg px-4 py-2 w-full"
+        placeholder="Rechercher des images..."
+      />
+    </div>
+  
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div *ngFor="let image of images; let i = index" class="border rounded-lg overflow-hidden">
+        <div class="w-full h-[200px] flex items-center justify-center bg-gray-100">
+          <img
+            [src]="image.webformatURL"
+            [alt]="image.tags"
+            class="h-full object-cover"
+          />
+        </div>
+        <div class="p-2 flex justify-between items-center">
+          <p class="truncate">{{ image.tags }}</p>
+          <button (click)="deleteImage(i)" class="text-red-500 hover:text-red-700">
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="flex justify-center mt-4 flex-wrap">
+      <button
+        class="px-4 py-2 border rounded-lg mx-1"
+        [class.bg-gray-300]="page === 1"
+        [disabled]="page === 1"
+        (click)="onPageChange(page - 1)"
+      >
+        Précédent
+      </button>
+      <button
+        *ngFor="let p of [].constructor(Math.ceil(totalHits / perPage)); let index = index"
+        class="px-4 py-2 border rounded-lg mx-1"
+        [class.bg-blue-500]="page === index + 1"
+        [class.text-white]="page === index + 1"
+        [class.text-gray-700]="page !== index + 1"
+        (click)="onPageChange(index + 1)"
+      >
+        {{ index + 1 }}
+      </button>
+      <button
+        class="px-4 py-2 border rounded-lg mx-1"
+        [class.bg-gray-300]="page * perPage >= totalHits"
+        [disabled]="page * perPage >= totalHits"
+        (click)="onPageChange(page + 1)"
+      >
+        Suivant
+      </button>
+    </div>
+  </div>
+  

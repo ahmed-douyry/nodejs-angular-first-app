@@ -1,0 +1,35 @@
+.search-bar {
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px;
+  }
+  
+  .image-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    max-width: 200px;
+  }
+  
+  .image-card img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  
+  .pagination {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .pagination button {
+    margin: 0 10px;
+  }
+  

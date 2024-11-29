@@ -3,6 +3,9 @@ const app = express();
 app.use(express.json());
 const mysql = require('mysql');
 const cors = require('cors');
+const passport = require('passport');
+
+const FacebookTokenStrategy = require('passport-facebook-token');
 app.use(cors({origin:'http://localhost:4200'}));
 const db = mysql.createConnection({
     host: 'localhost',
@@ -10,6 +13,22 @@ const db = mysql.createConnection({
     password: '',
     database: 'GestionEtudiants'
 });
+passport.use(new FacebookTokenStrategy(
+    {
+        clientID: '812871074242144', 
+        clientSecret: 'bee29d68daa8747a563f0866b5109395', 
+    },
+    (accessToken, refreshToken, profile, done) => {
+        const user = {
+            facebookId: profile.id,
+            name: profile.displayName,
+            email: profile.emails ? profile.emails[0].value : null,
+        };
+        return done(null, user); 
+    }
+));
+
+app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 
 db.connect((err)=>{
@@ -20,12 +39,10 @@ db.connect((err)=>{
     }
 })
 app.get('/api/etudiants', (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Page actuelle, par défaut 1
-    const size = parseInt(req.query.size) || 6;  // Taille de la page, par défaut 6
-    const offset = (page - 1) * size;  // Calcul du décalage (OFFSET)
-    const search = req.query.search || ''; // Paramètre de recherche, vide si non fourni
-
-    // Obtenir le nombre total d'étudiants en filtrant par recherche
+    const page = parseInt(req.query.page) || 1; 
+    const size = parseInt(req.query.size) || 6;  
+    const offset = (page - 1) * size;  
+    const search = req.query.search || ''; 
     const searchQuery = search ? `WHERE nom LIKE '%${search}%' OR prenom LIKE '%${search}%'` : '';
     
     db.query(`SELECT COUNT(*) AS total FROM ETUDIANTS ${searchQuery}`, (err, totalRows) => {
@@ -34,36 +51,65 @@ app.get('/api/etudiants', (req, res) => {
             return res.status(500).send('Database query error');
         }
 
-        const total = totalRows[0].total;  // Nombre total d'étudiants
+        const total = totalRows[0].total;  
 
-        // Récupérer les étudiants filtrés et paginés
         db.query(
             `SELECT * FROM ETUDIANTS ${searchQuery} LIMIT ? OFFSET ?`,
-            [size, offset], // Passer la taille et le décalage
+            [size, offset], 
             (err, rows) => {
                 if (err) {
                     console.log(err);
                     return res.status(500).send('Database query error');
                 }
 
-                // Formater la date de naissance pour chaque étudiant
                 rows.map((row) => {
                     row.date_naissance = row.date_naissance.toISOString().split('T')[0]; // Format date (YYYY-MM-DD)
                 });
 
-                // Calculer le nombre total de pages
                 const totalPages = Math.ceil(total / size);
 
-                // Renvoyer la réponse avec les étudiants filtrés et paginés
                 res.json({
                     etudiants: rows,
                     total: total,
-                    totalPages: totalPages, // Nombre total de pages
-                    currentPage: page       // Page actuelle
+                    totalPages: totalPages, 
+                    currentPage: page       
                 });
             }
         );
     });
+});
+app.post('/api/auth/facebook', passport.authenticate('facebook-token'), (req, res) => {
+    if (req.user) {
+        const { facebookId, name, email } = req.user;
+
+        db.query('SELECT * FROM users WHERE facebook_id = ?', [facebookId], (err, result) => {
+            if (err) {
+                console.error('Erreur SQL:', err);
+                return res.status(500).send('Erreur de base de données');
+            }
+
+            if (result.length > 0) {
+                res.status(200).json({ message: 'Connexion réussie', user: result[0] });
+            } else {
+                db.query(
+                    'INSERT INTO users (facebook_id, name, email) VALUES (?, ?, ?)',
+                    [facebookId, name, email],
+                    (err, result) => {
+                        if (err) {
+                            console.error('Erreur SQL:', err);
+                            return res.status(500).send('Erreur de base de données');
+                        }
+                        res.status(201).json({
+                            message: 'Utilisateur enregistré avec succès',
+                            user: { id: result.insertId, facebookId, name, email },
+                        });
+                    }
+                );
+            }
+        });
+    } else {
+        res.status(401).json({ message: 'Authentification Facebook échouée' });
+    }
 });
 
 app.get('/api/etudiants/:id',(req,res)=>{

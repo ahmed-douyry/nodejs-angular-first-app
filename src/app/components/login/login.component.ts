@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { UserModel } from '../../models/user.model';
 import { CommonModule } from '@angular/common';
+import { FacebookSdkService } from '../../services/auth.service-facebook.service';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private Authfb : FacebookSdkService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -42,6 +44,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
+    this.Authfb.initFacebookSdk()
+    .then(() => console.log('SDK Facebook initialisé avec succès'))
+    .catch((err) => console.error('Erreur d\'initialisation du SDK Facebook:', err));
     // get return url from route parameters or default to '/'
     this.returnUrl =
       this.route.snapshot.queryParams['returnUrl'.toString()] || '/';
@@ -92,4 +97,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
+  loginWithFacebook() {
+    this.Authfb.login()
+      .then((authResponse: any) => {
+        console.log('Connexion réussie avec Facebook:', authResponse);
+        // Envoyer authResponse.accessToken au backend
+      })
+      .catch((err) => console.error('Erreur de connexion Facebook:', err));
+  }
+  
 }

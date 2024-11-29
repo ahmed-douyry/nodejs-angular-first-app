@@ -67,7 +67,25 @@ export class HomeComponent implements OnInit {
     })
 }
 
+// moi = {
+  //   nom:'douyry',
+  //   email:'ahmed.douyry@gmail.com',
+  //   tel :'0655710017'
+  // }
+  // comments:any =[]
+  // comment={id:0,message:'',date:String}
+  // newcomment = false
+  // aa = {date:String,message:''}
 
+  // addcomment(){
+  //   if(this.comment.message!=''){
+  //     this.comment.id = this.comments.length+1
+  //     console.log(this.comment.message)
+  //       this.comments.push({id:this.comment.id,message :this.comment.message,date:new Date().toLocaleDateString()})
+  //       console.log(this.comments)
+  //       this.comment.message = ''
+  //   }
+  // }
   goToPage(page: number) {
     if (page < 1 || page > this.totalPages) return
     this.currentPage = page
