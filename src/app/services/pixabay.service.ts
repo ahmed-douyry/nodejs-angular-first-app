@@ -15,4 +15,11 @@ export class PixabayService {
     const url = `${this.apiUrl}?key=${this.apiKey}&q=${query}&per_page=${perPage}&page=${page}`;
     return this.http.get(url);
   }
+  getImageById(id: number): Observable<any> {
+    const url = `${this.apiUrl}?key=${this.apiKey}&id=${id}`;
+    return this.http.get(url);
+  }
+  
+  
+
 }

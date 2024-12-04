@@ -7,6 +7,8 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { UserModel } from '../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { FacebookSdkService } from '../../services/auth.service-facebook.service';
+import { AuthServiceGoogle } from '../../services/google-auth.service';
+import { SocialUser } from 'angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -20,23 +22,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     email: 'admin@demo.com',
     password: 'demo',
   };
+  user: SocialUser | null = null;
+
   loginForm!: FormGroup;
   hasError!: boolean;
   returnUrl!: string;
   isLoading$: Observable<boolean>;
 
-  // private fields
-  private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+  private unsubscribe: Subscription[] = []; 
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private Authfb : FacebookSdkService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authsergo : AuthServiceGoogle
   ) {
     this.isLoading$ = this.authService.isLoading$;
-    // redirect to home if already logged in
     if (this.authService.currentUserValue) {
       this.router.navigate(['/']);
     }
@@ -97,13 +100,23 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
-  loginWithFacebook() {
-    this.Authfb.login()
-      .then((authResponse: any) => {
-        console.log('Connexion réussie avec Facebook:', authResponse);
-        // Envoyer authResponse.accessToken au backend
+  // loginWithFacebook() { 
+  //   this.Authfb.login()
+  //     .then((authResponse: any) => {
+  //       console.log('Connexion réussie avec Facebook:', authResponse);
+  //     })
+  //     .catch((err) => console.error('Erreur de connexion Facebook:', err));
+  // }
+  loginWithGoogle(): void {
+    this.authsergo
+      .signInWithGoogle()
+      .then((user: SocialUser) => {
+        console.log('Connexion réussie avec Google:', user);
+        this.user = user;
       })
-      .catch((err) => console.error('Erreur de connexion Facebook:', err));
+      .catch((error) => {
+        console.error('Erreur de connexion avec Google:', error);
+      });
   }
   
 }

@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
     "ang19": "file:",
+    "angularx-social-login": "^4.1.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "cors": "^2.8.5",

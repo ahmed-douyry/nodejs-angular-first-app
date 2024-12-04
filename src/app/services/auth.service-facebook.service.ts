@@ -14,10 +14,9 @@ export class FacebookSdkService {
         return;
       }
 
-      // Déclare une méthode globale attendue par le SDK Facebook
       (window as any).fbAsyncInit = () => {
         FB.init({
-          appId: '812871074242144', // Remplacez par votre App ID Facebook
+          appId: '812871074242144', 
           cookie: true,
           xfbml: true,
           version: 'v14.0', // Remplacez par la version de l'API Facebook

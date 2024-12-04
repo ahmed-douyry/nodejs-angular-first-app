@@ -1,1 +1,52 @@
-<p>photo-detaille works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+  <div *ngIf="image; else errorTemplate" class="container mx-auto">
+    <div class="flex flex-col items-center">
+      
+      <img
+        [src]="image?.largeImageURL"
+        [alt]="image?.tags"
+        class="w-full max-w-2xl  rounded-md shadow-lg"
+        style="height: 80vh;"
+      />
+    </div>
+  </div>
+  <div class="mt-4 text-gray-700">
+    <h2 class="text-3xl font-bold mb-4">{{ image?.tags }}</h2>
+    <p><strong>Views:</strong> {{ image?.views }}</p>
+    <p><strong>Likes:</strong> {{ image?.likes }}</p>
+    <p><strong>Comments:</strong> {{ image?.comments }}</p>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="text-3xl font-bold mb-4">Image Owner</h2>
+            <p *ngIf="image.user!='';else error"><strong>Name:</strong> {{ image?.user }}</p>
+            <ng-template #error>
+              <p><strong>Name:</strong>image  User not found</p>
+            </ng-template>
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-3xl font-bold mb-4">User Image</h2>
+            <img [src]="image?.userImageURL" alt="" class="rounded-full">
+
+        </div>
+    </div>
+    <button
+      (click)="goBack()"
+      class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
+    >
+      Back
+    </button>
+  </div>
+</div>
+
+<ng-template #errorTemplate>
+  <div class="container mx-auto p-4 text-center">
+    <h2 class="text-xl font-semibold text-red-600">Error: {{ error }}</h2>
+    <p>The image could not be loaded. Please try again later.</p>
+    <button
+      (click)="goBack()"
+      class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
+    >
+      Back
+    </button>
+  </div>
+</ng-template>

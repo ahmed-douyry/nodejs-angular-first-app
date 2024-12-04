@@ -9,10 +9,11 @@
       />
     </div>
   
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" >
       <div *ngFor="let image of images; let i = index" class="border rounded-lg overflow-hidden">
-        <div class="w-full h-[200px] flex items-center justify-center bg-gray-100">
+        <div class="w-full h-[200px] flex items-center justify-center bg-gray-100" [routerLink]="['/photos', image.id]">
           <img
+          
             [src]="image.webformatURL"
             [alt]="image.tags"
             class="h-full object-cover"
@@ -56,4 +57,4 @@
       </button>
     </div>
   </div>
-  
+  <router-outlet></router-outlet>

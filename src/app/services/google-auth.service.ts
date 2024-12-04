@@ -1,34 +1,38 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { SocialAuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
+export class AuthServiceGoogle {
+  private backendUrl = 'http://localhost:3000/auth/google'; 
+  private user: SocialUser | null = null;
 
-export class GoogleAuthService {
-  private clientId = '1011541733762-6odmumlhq4nut9vseoghhvm2m9pch0hi.apps.googleusercontent.com';
+  constructor(private authService: SocialAuthService, private http: HttpClient) {}
 
-  constructor() {
-    this.initializeGoogleSignIn();
+  signInWithGoogle(): Promise<SocialUser> {
+  if (!this.authService) {
+    return Promise.reject('authService is undefined');
+  }
+  
+  return this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(user => {
+    this.user = user;
+    return user;
+  }).catch(error => {
+    console.error('Erreur de connexion Google :', error);
+    throw error;
+  });
+}
+
+
+  signOut(): Promise<void> {
+    this.user = null;
+    return this.authService.signOut();
   }
 
-  // Initialize Google Sign-In
-  initializeGoogleSignIn(): void {
-    google.accounts.id.initialize({
-      client_id: this.clientId,
-      callback: this.handleCredentialResponse.bind(this),
-    });
-  }
-
-  // Display Google Sign-In prompt
-  promptGoogleSignIn(): void {
-    google.accounts.id.prompt();
-  }
-
-  // Handle the response from Google
-  handleCredentialResponse(response: any): void {
-    const user = JSON.parse(atob(response.credential.split('.')[1]));
-    console.log('User Info:', user);
-
-    // Send the token or user info to the backend for further processing
+  authenticateWithBackend(token: string): Observable<any> {
+    return this.http.post(`${this.backendUrl}`, { idToken: token });
   }
 }

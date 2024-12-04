@@ -1,36 +1,21 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6">
-            <!--begin::Form-->
     <form class="form w-100" [formGroup]="loginForm" novalidate="novalidate" id="kt_login_signin_form"
     (ngSubmit)="submit()">
-    <!--begin::Heading-->
     <div class="text-center mb-11">
       <h1 class="text-gray-900 fw-bolder mb-3">
         Sign In
       </h1>
-      <!--begin::Subtitle-->
       <div class="text-gray-500 fw-semibold fs-6">
         Your Social Campaigns
       </div>
-      <!--end::Subtitle--->
-      <!-- <div class="text-gray-500 fw-bold fs-4">
-        New Here?
-        <a
-          routerLink="/auth/registration"
-          id="kt_login_signup"
-          class="link-primary fw-bolder"
-          >{{ "AUTH.GENERAL.SIGNUP_BUTTON" | translate }}</a
-        >
-      </div> -->
+      
     </div>
-    <!--end::Heading-->
     
-    <!--begin::Login options-->
     <div class="row ">
-        <!--begin::Col-->
         <div class="col-md-6 d-flex text-center">
-          <button
+          <button type="button" (click)="loginWithGoogle()"
             
             class="btn text-center btn-outline-danger btn-text-gray-700 h-10 btn-active-color-primary bg-state-light flex items-center justify-center text-nowrap w-100"
           >
@@ -46,7 +31,7 @@
       
         <!--begin::Col-->
         <div class="col-md-6">
-          <button (click)="loginWithFacebook()"
+          <button 
             class="btn btn-flex btn-outline-primary h-10 btn-text-gray-700 btn-active-color-primary bg-state-light flex items-center justify-center text-nowrap w-100">
             <div class="d-flex text-center">
               <img alt="Logo" src="svg/facebook-3.svg" class="h-6  mr-3" />
